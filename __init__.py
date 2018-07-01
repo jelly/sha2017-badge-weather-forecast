@@ -15,8 +15,9 @@ import gc
 import badge
 import easywifi
 import ugfx
-import utime
 import deepsleep
+import utime
+import easyrtc
 
 import urequests as requests
 
@@ -49,6 +50,16 @@ BUIENRADAR_ICONS = {
     "w": "\uf01b",
 }
 
+WEEKDAYS = {
+    1: 'Sun',
+    2: 'Mon',
+    3: 'Tue',
+    4: 'Wed',
+    5: 'Thu',
+    6: 'Fri',
+    7: 'Sat',
+}
+
 
 def clear_screen():
     ugfx.clear(ugfx.BLACK)
@@ -59,6 +70,7 @@ def clear_screen():
 
 def init():
     easywifi.enable()
+    easyrtc.configure()
     clear_screen()
 
 
@@ -68,19 +80,14 @@ def get_days():
     data = r.json()
 
     xpos = 0
+    weekday = utime.localtime()[6]
     for index, day_data in enumerate(data['days']):
         if index == 4:
             break
 
         ypos = 0
 
-        # 2018-06-24T00:00:00
-        date = day_data['date'].split('T')[0]
-        # Strip year
-        date = date[5:]
-        month, day = date.split('-')
-
-        text = '{}-{}'.format(day, month)
+        text = WEEKDAYS[weekday]
         twidth = ugfx.get_string_width(text, FONT)
         ugfx.string(xpos, ypos, text, FONT, ugfx.BLACK)
 
@@ -106,8 +113,12 @@ def get_days():
         text = str(int(day_data['precipitationmm'])) + 'mm'
         ugfx.string(xpos, ypos, text, FONT, ugfx.BLACK)
 
-        xpos += twidth + 2
+        xpos += twidth + 24
 
+        if weekday == 7:
+            weekday = 0
+        else:
+            weekday += 1
 
 
 init()
