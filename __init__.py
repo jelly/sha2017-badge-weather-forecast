@@ -116,7 +116,7 @@ def get_days():
         xpos += twidth + 24
 
         if weekday == 7:
-            weekday = 0
+            weekday = 1
         else:
             weekday += 1
 
