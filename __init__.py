@@ -65,7 +65,7 @@ WEEKDAYS = {
     6: 'Fri',
     7: 'Sat',
 }
-SERVER = 'dedi.vdwaa.nl'
+SERVER = ''
 
 
 def publish_temp():
