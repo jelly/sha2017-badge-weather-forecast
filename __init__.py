@@ -19,7 +19,13 @@ import deepsleep
 import utime
 import easyrtc
 
+
+from umqtt.simple import MQTTClient
 import urequests as requests
+
+
+from bmp180 import BMP180
+
 
 WIDTH = 295
 HEIGHT = 128
@@ -59,6 +65,19 @@ WEEKDAYS = {
     6: 'Fri',
     7: 'Sat',
 }
+SERVER = 'dedi.vdwaa.nl'
+
+
+def publish_temp():
+    bmp180 = BMP180()
+    temp = bmp180.temperature
+
+    mqtt = MQTTClient("badge", SERVER)
+    mqtt.connect()
+    mqtt.publish(b"/badge/temperature", b"%s" % temp)
+    mqtt.disconnect()
+
+    return temp
 
 
 def clear_screen():
@@ -122,11 +141,12 @@ def get_days():
 
 
 init()
+temp = publish_temp()
 get_days()
 
 badge.eink_busy_wait()
 ugfx.flush(ugfx.LUT_FULL)
 badge.eink_busy_wait()
 
-# Sleep for 30 minutes
-deepsleep.start_sleeping(1800000)
+# Sleep for 10 minutes
+deepsleep.start_sleeping(600000)
