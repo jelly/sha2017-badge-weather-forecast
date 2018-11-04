@@ -29,6 +29,7 @@ from bmp180 import BMP180
 
 WIDTH = 295
 HEIGHT = 128
+SMALL_FONT = "Roboto_Regular12"
 FONT = 'Roboto_BlackItalic24'
 LOC_CODE = 2757345
 
@@ -88,19 +89,22 @@ def clear_screen():
 
 
 def init():
+    badge.init()
+    ugfx.init()
     easywifi.enable()
     easyrtc.configure()
     clear_screen()
 
 
-def get_days():
-    url = 'https://api.buienradar.nl/data/forecast/1.1/daily/{}'.format(LOC_CODE)
+def get_days(temp):
+    #url = 'https://forecast.buienradar.nl/2.0/forecast/{}'.format(LOC_CODE)
+    url = 'https://dedi.vdwaa.nl/~jelle/weather.json'
     r = requests.get(url)
     data = r.json()
 
     xpos = 0
     weekday = utime.localtime()[6]
-    for index, day_data in enumerate(data['days']):
+    for index, day_data in enumerate(data):
         if index == 4:
             break
 
@@ -119,17 +123,17 @@ def get_days():
         # Min / Max / Rain
         ypos += 44
 
-        text = str(int(day_data['maxtemperature'])) + 'C'
+        text = str(int(day_data['maxtemp'])) + 'C'
         ugfx.string(xpos, ypos, text, FONT, ugfx.BLACK)
 
         ypos += 20
 
-        text = str(int(day_data['mintemperature'])) + 'C'
+        text = str(int(day_data['mintemp'])) + 'C'
         ugfx.string(xpos, ypos, text, FONT, ugfx.BLACK)
 
         ypos += 20
 
-        text = str(int(day_data['precipitationmm'])) + 'mm'
+        text = str(int(day_data['precipitation'])) + 'mm'
         ugfx.string(xpos, ypos, text, FONT, ugfx.BLACK)
 
         xpos += twidth + 24
@@ -142,7 +146,7 @@ def get_days():
 
 init()
 temp = publish_temp()
-get_days()
+get_days(temp)
 
 badge.eink_busy_wait()
 ugfx.flush(ugfx.LUT_FULL)
