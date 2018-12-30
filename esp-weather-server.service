@@ -1,0 +1,11 @@
+[Unit]
+Description=ESP Weather Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python /usr/local/bin/weather_server.py
+Restart=always
+DynamicUser=true
+
+[Install]
+WantedBy=multi-user.target
