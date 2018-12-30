@@ -11,7 +11,6 @@ Check the used uri and use the number in the result for the following url.
 https://api.buienradar.nl/data/forecast/1.1/daily/2757345
 '''
 
-import gc
 import badge
 import easywifi
 import ugfx
