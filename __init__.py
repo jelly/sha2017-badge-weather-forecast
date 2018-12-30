@@ -78,8 +78,8 @@ def init():
     clear_screen()
 
 
-def get_days(temp):
-    url = 'https://dedi.vdwaa.nl/~jelle/weather.json'
+def get_days():
+    url = 'http://192.168.178.16:5000/'
     r = requests.get(url)
     data = r.json()
 
@@ -126,7 +126,7 @@ def get_days(temp):
 
 
 init()
-get_days(temp)
+get_days()
 
 badge.eink_busy_wait()
 ugfx.flush(ugfx.LUT_FULL)
