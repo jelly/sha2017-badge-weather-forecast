@@ -19,11 +19,7 @@ import utime
 import easyrtc
 
 
-from umqtt.simple import MQTTClient
 import urequests as requests
-
-
-from bmp180 import BMP180
 
 
 WIDTH = 295
@@ -65,19 +61,6 @@ WEEKDAYS = {
     6: 'Fri',
     7: 'Sat',
 }
-SERVER = ''
-
-
-def publish_temp():
-    bmp180 = BMP180()
-    temp = bmp180.temperature
-
-    mqtt = MQTTClient("badge", SERVER)
-    mqtt.connect()
-    mqtt.publish(b"/badge/temperature", b"%s" % temp)
-    mqtt.disconnect()
-
-    return temp
 
 
 def clear_screen():
@@ -96,7 +79,6 @@ def init():
 
 
 def get_days(temp):
-    #url = 'https://forecast.buienradar.nl/2.0/forecast/{}'.format(LOC_CODE)
     url = 'https://dedi.vdwaa.nl/~jelle/weather.json'
     r = requests.get(url)
     data = r.json()
@@ -144,7 +126,6 @@ def get_days(temp):
 
 
 init()
-temp = publish_temp()
 get_days(temp)
 
 badge.eink_busy_wait()
